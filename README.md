@@ -23,7 +23,7 @@ Feel free to issue pull requests and add tools that you think are beneficial for
 ```
 bash reFresh.sh -s -v
 ```
-<img src="https://github.com/retkoussa/reFresh/img/reFresh.png">
+<img src="https://github.com/retkoussa/reFresh/blob/master/img/reFresh.png">
 
 
 ## Contact
