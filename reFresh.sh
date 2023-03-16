@@ -26,6 +26,8 @@ if [[ $# -gt 0 && "$1" == "-h" || "$2" == "-h" || "$3" == "-h" ]]; then
 fi
 
 
+
+
 # Init banner!
 echo -e "
 
@@ -99,7 +101,7 @@ check_prerequisites(){
     sudo apt remove --autoremove golang-go -y
     sudo rm -rf /usr/local/go
     sudo rm -rf /usr/local/bin/go
-    rm -rf $HOME/go
+    mv $HOME/go $HOME/go_backup
     source ~/.bashrc
 
     # Download latest go
