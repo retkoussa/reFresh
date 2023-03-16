@@ -2,25 +2,33 @@
 
 verbose=false
 skip=false
+install_go=false
 host_type=linux
 arch=x86_64
 
 # Check if any of the parameters are -v
-if [[ $# -gt 0 && "$1" == "-v" || "$2" == "-v" || "$3" == "-v" ]]; then
+if [[ $# -gt 0 && "$1" == "-v" || "$2" == "-v" || "$3" == "-v" ||  "$4" == "-v" ]]; then
     verbose=true
 fi
 
 # Check if any of the parameters are -s
-if [[ $# -gt 0 && "$1" == "-s" || "$2" == "-s" || "$3" == "-s" ]]; then
+if [[ $# -gt 0 && "$1" == "-s" || "$2" == "-s" || "$3" == "-s" ||  "$4" == "-s" ]]; then
     skip=true
 fi
 
 
+#check if any of the parameters are --install-go
+if [[ $# -gt 0 && "$1" == "--install-go" || "$2" == "--install-go" || "$3" == "--install-go" ||  "$4" == "--install-go" ]]; then
+    install_go=true
+fi
+
+
 # Check if any of the parameters are -h
-if [[ $# -gt 0 && "$1" == "-h" || "$2" == "-h" || "$3" == "-h" ]]; then
+if [[ $# -gt 0 && "$1" == "-h" || "$2" == "-h" || "$3" == "-h" ||  "$4" == "-h" ]]; then
     echo "Usage: ./reFresh.sh [-v] [-h]"
     echo "[-v] Verbose output"
     echo "[-s] Skip prerequisites installation (go & python3)"
+    echo "[--install-go] Install latest go version (backs up your previous $HOME/go directory)"
     echo "[-h] Help"
     exit 1
 fi
@@ -55,6 +63,8 @@ fi
 
 # Define all functions responsible for installing tools
 check_prerequisites(){
+    
+    
     # Check if the host is running macOS or Linux
     if [[ "$(uname)" == "Darwin" ]]; then
         echo "[+] The host is running macOS."
@@ -95,43 +105,47 @@ check_prerequisites(){
     fi
 
 
-    # Install go 1.19
-    echo "[-] Installing go"
-    sudo apt remove --autoremove golang -y
-    sudo apt remove --autoremove golang-go -y
-    sudo rm -rf /usr/local/go
-    sudo rm -rf /usr/local/bin/go
-    mv $HOME/go $HOME/go_backup
-    source ~/.bashrc
 
-    # Download latest go
-    # Check if host_type variable is linux or darwin and if the arch is x86_64, amd64, or i686
-    # Linux x86_64
-    # Linux i686
-    # Darwin x86_64
-    # Darwin arm64
-    if [[ $host_type == "linux" && $arch == "x86_64" ]]; then
-        wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.linux-amd64.tar.gz 
-    elif [[ $host_type == "linux" && $arch == "i686" ]]; then
-        wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.linux-386.tar.gz
-    elif [[ $host_type == "darwin" && $arch == "x86_64" ]]; then
-        wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.darwin-amd64.tar.gz
-    elif [[ $host_type == "darwin" && $arch == "arm64" ]]; then
-        wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.darwin-arm64.pkg
+   # check if install_go is true
+    if [[ $install_go == true ]]; then
+         # Install go 1.19
+        echo "[-] Installing go"
+        sudo apt remove --autoremove golang -y
+        sudo apt remove --autoremove golang-go -y
+        sudo rm -rf /usr/local/go
+        sudo rm -rf /usr/local/bin/go
+        mv $HOME/go $HOME/go_backup
+        source ~/.bashrc
+
+        # Download latest go
+        # Check if host_type variable is linux or darwin and if the arch is x86_64, amd64, or i686
+        # Linux x86_64
+        # Linux i686
+        # Darwin x86_64
+        # Darwin arm64
+        if [[ $host_type == "linux" && $arch == "x86_64" ]]; then
+            wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.linux-amd64.tar.gz 
+        elif [[ $host_type == "linux" && $arch == "i686" ]]; then
+            wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.linux-386.tar.gz
+        elif [[ $host_type == "darwin" && $arch == "x86_64" ]]; then
+            wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.darwin-amd64.tar.gz
+        elif [[ $host_type == "darwin" && $arch == "arm64" ]]; then
+            wget -O $path/golang.tar.gz https://go.dev/dl/go1.20.2.darwin-arm64.pkg
+        fi
+
+        # Unzip and set the paths
+        current_user=$(whoami)
+        # tar -C /usr/local -xzf $path/golang.tar.gz
+        tar -C /home/$current_user -xzf golang.tar.gz
+        sh -c 'echo "export GOPATH=/home/`whoami`/go" >> ~/.bashrc'
+        sh -c 'echo "export PATH=$PATH:/home/`whoami`/home/go/bin:$GOPATH/bin" >> ~/.bashrc'
+        sh -c 'echo "export GOCACHE=/home/`whoami`/.cache/go-build" >> ~/.bashrc'
+        sudo rm $path/golang.tar.gz
+        sudo chmod -R 777 /home/dev/go/bin
+        source ~/.bashrc
+        echo "[-] Installed go version: "
+        sh -c "go version"
     fi
-
-    # Unzip and set the paths
-    current_user=$(whoami)
-    # tar -C /usr/local -xzf $path/golang.tar.gz
-    tar -C /home/$current_user -xzf golang.tar.gz
-    sh -c 'echo "export GOPATH=/home/`whoami`/go" >> ~/.bashrc'
-    sh -c 'echo "export PATH=$PATH:/home/`whoami`/home/go/bin:$GOPATH/bin" >> ~/.bashrc'
-    sh -c 'echo "export GOCACHE=/home/`whoami`/.cache/go-build" >> ~/.bashrc'
-    sudo rm $path/golang.tar.gz
-    sudo chmod -R 777 /home/dev/go/bin
-    source ~/.bashrc
-    echo "[-] Installed go version: "
-    sh -c "go version"
 }
 
 xnl-h4ck3r(){
