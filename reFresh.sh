@@ -254,14 +254,14 @@ if $verbose; then
         check_prerequisites
     fi
     xnl-h4ck3r
-    # tomnomnom
-    # gf_patterns
-    # hakluke
-    # 1ndianl33t
-    # install_gospider
-    # project_discovery
-    # install_paramspider
-    # update-install-templates
+    tomnomnom
+    gf_patterns
+    hakluke
+    1ndianl33t
+    install_gospider
+    project_discovery
+    install_paramspider
+    update-install-templates
 else
     echo "[-] Installing tools without verbose output"
     echo "[-] This may take a while, please be patient"
