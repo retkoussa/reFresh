@@ -189,6 +189,8 @@ tomnomnom(){
     go install -v github.com/tomnomnom/hacks/anti-burl@latest
     echo "[-] Installing filter-resolved"
     go install -v github.com/tomnomnom/hacks/filter-resolved@latest
+    echo "[-] Installing anew"
+    go install -v github.com/tomnomnom/anew@latest
 }
 
 gf_patterns(){
@@ -247,6 +249,11 @@ install_paramspider(){
     pip3 install -r requirements.txt
 }
 
+install_lc(){
+    echo "[-] Installing lc tools"
+    git install -v github.com/lc/gau@latest
+}
+
 update-install-templates(){
 
     # install nuclei templates
@@ -277,6 +284,7 @@ if $verbose; then
     install_gospider
     project_discovery
     install_paramspider
+    install_lc
     update-install-templates
 else
     echo "[-] Installing tools without verbose output"
@@ -301,6 +309,8 @@ else
     install_gospider &> /dev/null
     echo "[-] Installing projectdiscovery tools"
     project_discovery &> /dev/null
+    echo "[-] Installing lc tools"
+    install_lc &> /dev/null
     echo "[-] Installing ParamSpider"
     install_paramspider &> /dev/null
     echo "[-] Updating and installing templates"
