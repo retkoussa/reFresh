@@ -16,6 +16,7 @@ Feel free to issue pull requests and add tools that you think are beneficial for
 | -h | Displays help menu |
 | -s | Skips pre-requistes' installation like python3 and go
 | -v | Displays verbose information during installation |
+| --install-go | Specify that you want to install the latest version of go (feature still unstable)| 
 
 ***
 
