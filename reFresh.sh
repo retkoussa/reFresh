@@ -136,15 +136,42 @@ check_prerequisites(){
         # Unzip and set the paths
         current_user=$(whoami)
         # tar -C /usr/local -xzf $path/golang.tar.gz
-        tar -C /home/$current_user -xzf golang.tar.gz
-        sh -c 'echo "export GOPATH=/home/`whoami`/go" >> ~/.bashrc'
-        sh -c 'echo "export PATH=$PATH:/home/`whoami`/home/go/bin:$GOPATH/bin" >> ~/.bashrc'
-        sh -c 'echo "export GOCACHE=/home/`whoami`/.cache/go-build" >> ~/.bashrc'
-        sudo rm $path/golang.tar.gz
-        sudo chmod -R 777 /home/dev/go/bin
-        source ~/.bashrc
-        echo "[-] Installed go version: "
-        sh -c "go version"
+        # check if current user is root
+        if [[ $current_user == "root" ]]; then
+
+            #check if file ~/.zshrc exists
+            if [ -f ~/.zshrc ]; then
+                tar -C /home/ -xzf /home/golang.tar.gz
+                sh -c 'echo "export GOPATH=/home/go" >> ~/.zshrc'
+                sh -c 'echo "export PATH=$PATH:/home/go/bin:$GOPATH/bin" >> ~/.zshrc'
+                sh -c 'echo "export GOCACHE=/home/.cache/go-build" >> ~/.zshrc'
+                sudo rm /home/golang.tar.gz
+                source ~/.zshrc
+                echo "[-] Installed go version: "
+                sh -c "go version"
+            else
+                tar -C /home/ -xzf /home/golang.tar.gz
+                sh -c 'echo "export GOPATH=/home/go" >> ~/.bashrc'
+                sh -c 'echo "export PATH=$PATH:/home/go/bin:$GOPATH/bin" >> ~/.bashrc'
+                sh -c 'echo "export GOCACHE=/home/.cache/go-build" >> ~/.bashrc'
+                sudo rm /home/golang.tar.gz
+                source ~/.bashrc
+                echo "[-] Installed go version: "
+                sh -c "go version"
+            fi
+           
+        else
+            tar -C /home/$current_user -xzf golang.tar.gz
+            sh -c 'echo "export GOPATH=/home/`whoami`/go" >> ~/.bashrc'
+            sh -c 'echo "export PATH=$PATH:/home/`whoami`/home/go/bin:$GOPATH/bin" >> ~/.bashrc'
+            sh -c 'echo "export GOCACHE=/home/`whoami`/.cache/go-build" >> ~/.bashrc'
+            sudo rm $path/golang.tar.gz
+            sudo chmod -R 777 /home/$(whoami)/go/bin
+            source ~/.bashrc
+            echo "[-] Installed go version: "
+            sh -c "go version"
+        fi
+        
     fi
 }
 
@@ -198,7 +225,6 @@ gf_patterns(){
     # install gf patterns
     cd $path
     git clone https://github.com/1ndianl33t/Gf-Patterns
-    
     #check if the $HOME/.gf dir exists
     if [ ! -d "$HOME/.gf" ]; then
         echo "[-] Creating directory $HOME/.gf"
@@ -251,7 +277,7 @@ install_paramspider(){
 
 install_lc(){
     echo "[-] Installing lc tools"
-    git install -v github.com/lc/gau@latest
+    go install -v github.com/lc/gau@latest
 }
 
 update-install-templates(){
