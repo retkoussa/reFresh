@@ -197,7 +197,7 @@ tomnomnom(){
     echo "[-] Installing assetfinder"
     go install -v github.com/tomnomnom/assetfinder@latest
     echo "[-] Installing httprobe"
-    go install -v github.com/tomnomnom/httprobe@latest
+    go install -v github.com/tomnomnom/httprobe@master
     echo "[-] Installing waybackurls"
     go install -v github.com/tomnomnom/waybackurls@latest
     echo "[-] Installing unfurl"
